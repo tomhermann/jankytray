@@ -20,7 +20,7 @@ public enum Status {
 			return FAILURE;
 		} else if (all(jobs, are(disabled))) {
 			return DISABLED;
-		}  else if(any(jobs, are(building))) {
+		} else if(any(jobs, are(building))) {
 			return BUILDING;
 		}
 		return SUCCESS;
