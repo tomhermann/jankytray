@@ -36,8 +36,8 @@ public final class StatusImages implements DisposableBean {
 	
 	public void destroy() throws Exception {
 		log.info("Destroying status images.");
-		for (Entry<Status, Image> entry : repository.entrySet()) {
-			entry.getValue().dispose();
+		for (Image image : repository.values()) {
+			image.dispose();
 		}
 		repository.clear();
 	}
