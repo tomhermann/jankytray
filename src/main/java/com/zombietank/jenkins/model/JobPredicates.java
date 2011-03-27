@@ -1,7 +1,8 @@
 package com.zombietank.jenkins.model;
 
+import static com.google.common.base.Predicates.not;
+
 import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 
 public final class JobPredicates {
 
@@ -25,7 +26,7 @@ public final class JobPredicates {
 	
 	public static Predicate<Job> are(final Predicate<Job> predicate) { return predicate; }
 	
-	public static Predicate<Job> disabled = Predicates.not(enabled);
+	public static Predicate<Job> disabled = not(enabled);
 
 	private JobPredicates() {
 	}
