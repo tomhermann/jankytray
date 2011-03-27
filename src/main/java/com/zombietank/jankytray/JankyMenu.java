@@ -43,7 +43,7 @@ public class JankyMenu implements DisposableBean {
 		this.menu = new Menu(context.getShell());
 	}
 
-	public synchronized Status refresh() throws JenkinsServiceException {
+	public Status refresh() throws JenkinsServiceException {
 		List<Job> allJobs = jenkinsService.fetch(options.getJenkinsUrl()).getJobs();
 		clear();
 		addJobs(allJobs);
@@ -55,12 +55,12 @@ public class JankyMenu implements DisposableBean {
 		menu.setVisible(true);
 	}
 
-	public synchronized void destroy() throws Exception {
+	public void destroy() throws Exception {
 		log.info("Destroying menu.");
 		menu.dispose();
 	}
 
-	private synchronized void clear() {
+	private void clear() {
 		for (MenuItem item : menu.getItems()) {
 			item.dispose();
 		}
