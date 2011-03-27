@@ -1,5 +1,6 @@
 package com.zombietank.jenkins.model;
 
+import static com.google.common.base.Preconditions.*;
 import java.io.Serializable;
 import java.net.URL;
 
@@ -19,6 +20,7 @@ public class Job implements Serializable {
 	private final URL url;
 	
 	public Job(@Element(name="url") URL url, @Element(name="name") String name, @Element(name="color") String color) {
+		checkNotNull(color, "Color may not be null!");
 		this.url = url;
 		this.name = name;
 		this.color = color;
