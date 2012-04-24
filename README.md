@@ -5,7 +5,7 @@ A system tray application that displays the current status of a jenkins/hudson i
 
 Building
 --------
-	mvn package
+	gradle distZip
 	
 Usage
 ------
