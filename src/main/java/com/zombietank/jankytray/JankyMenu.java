@@ -4,6 +4,8 @@ import static com.zombietank.support.InvokingListener.invokingListener;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -32,8 +34,10 @@ public class JankyMenu implements DisposableBean {
 	private final JankyOptions options;
 	private final JankyWidgetContext context;
 	private final Menu menu;
-	@Autowired private StatusImages statusImages;
-	@Autowired private ProgramWrapper programWrapper;
+	@Inject
+	private StatusImages statusImages;
+	@Inject
+	private ProgramWrapper programWrapper;
 
 	@Autowired
 	public JankyMenu(JenkinsApiService jenkinsService, JankyOptions options, JankyWidgetContext context) {
@@ -69,14 +73,17 @@ public class JankyMenu implements DisposableBean {
 	private void addJobs(List<Job> jobs) {
 		for (Job job : jobs) {
 			new MenuItemBuilder(menu)
-					.withText(job.getName())
-					.withListener(SWT.Selection, invokingListener(programWrapper, "launch", job.getUrl()))
-					.withImage(statusImages.get(Status.of(job))).build();
+				.withText(job.getName())
+				.withListener(SWT.Selection, invokingListener(programWrapper, "launch", job.getUrl()))
+				.withImage(statusImages.get(Status.of(job))).build();
 		}
 	}
 
 	private void addOtherItems() {
 		new MenuItemBuilder(menu).withStyle(SWT.SEPARATOR).build();
-		new MenuItemBuilder(menu).withText("Exit").withListener(SWT.Selection, invokingListener(context.getShell(), "dispose")).build();
+		new MenuItemBuilder(menu)
+				.withText("Exit")
+				.withListener(SWT.Selection, invokingListener(context.getShell(), "dispose"))
+				.build();
 	}
 }

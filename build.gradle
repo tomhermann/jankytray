@@ -1,0 +1,48 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'eclipse'
+apply plugin: 'application'
+
+repositories {
+	maven { 
+		url 'http://iheartsoftware.com/nexus/content/groups/public'
+	}
+}
+
+configurations {
+	all*.exclude group: "commons-logging", module: "commons-logging"
+}
+
+mainClassName = "com.zombietank.jankytray.Boot"
+sourceCompatibility = 1.6
+targetCompatibility = sourceCompatibility
+
+dependencies {
+	compile (
+		'javax.inject:javax.inject:1',
+		'cglib:cglib:2.2.2',
+		"org.springframework:spring-context:${springVersion}",
+		"org.springframework:spring-beans:${springVersion}",
+		"org.springframework:spring-web:${springVersion}",
+		"org.slf4j:slf4j-api:${slf4jVersion}",
+		"org.slf4j:jcl-over-slf4j:${slf4jVersion}",
+		"org.slf4j:slf4j-log4j12:${slf4jVersion}",
+		'com.google.guava:guava:11.0.2',
+		'args4j:args4j:2.0.12',
+		'org.simpleframework:simple-xml:2.6.1',
+		"org.eclipse:swt:${swtVersion}",
+		"org.eclipse.swt.win32.win32:x86:${swtVersion}"
+	)
+
+	runtime (
+		'log4j:log4j:1.2.16'
+	)
+
+	testCompile (
+		'junit:junit:4.10',
+		'org.hamcrest:hamcrest-all:1.1',
+		'org.mockito:mockito-all:1.9.0'
+	)
+}
+
+

@@ -1,17 +1,23 @@
 package com.zombietank.support;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import org.eclipse.swt.widgets.Event;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class InvokingListenerTest {
+	@Mock
+	private Event event;
+	@Mock
+	private Tester tester;
 
 	@Test
 	public void willInvokePublicNoArgsMethod() {
-		Event event = mock(Event.class);
-		Tester tester = mock(Tester.class);
-		
 		InvokingListener.invokingListener(tester, "test").handleEvent(event);
 		
 		verify(tester, times(1)).test();
@@ -19,19 +25,13 @@ public class InvokingListenerTest {
 
 	@Test
 	public void willInvokePublicMethodWithArgs() {
-		Event event = mock(Event.class);
-		Tester tester = mock(Tester.class);
-		
 		InvokingListener.invokingListener(tester, "testArgs", "poo").handleEvent(event);
 		
 		verify(tester, times(1)).testArgs("poo");
 	}
 	
-	private class Tester {
-		public void test() {
-		}
-
-		public void testArgs(String poo) {
-		}
+	private interface Tester {
+		public void test();
+		public void testArgs(String poo);
 	}
 }

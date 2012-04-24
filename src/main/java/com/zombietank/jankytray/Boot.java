@@ -12,7 +12,7 @@ import org.springframework.context.support.GenericApplicationContext;
  * @author Tom Hermann
  */
 public final class Boot {
-	private static final String[] CONFIG_LOCATIONS = new String[]{"META-INF/spring/root-context.xml"};
+	private static final String[] CONFIG_LOCATIONS = new String[] { "META-INF/spring/root-context.xml" };
 
 	public static void main(String[] args) throws Exception {
 		// Handle command line options
@@ -22,11 +22,13 @@ public final class Boot {
 		// Set up new application context containing options.
 		DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
 		beanFactory.registerSingleton("jankyOptions", options);
-		GenericApplicationContext parentContext = new GenericApplicationContext(beanFactory);
+		GenericApplicationContext parentContext = new GenericApplicationContext(
+				beanFactory);
 		parentContext.refresh();
-		
+
 		// Augment XML based context
-		AbstractApplicationContext context = new ClassPathXmlApplicationContext(CONFIG_LOCATIONS, parentContext);
+		AbstractApplicationContext context = new ClassPathXmlApplicationContext(
+				CONFIG_LOCATIONS, parentContext);
 		context.registerShutdownHook();
 	}
 }
