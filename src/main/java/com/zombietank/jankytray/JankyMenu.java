@@ -3,7 +3,9 @@ package com.zombietank.jankytray;
 import static com.zombietank.support.InvokingListener.invokingListener;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Collection;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -34,6 +36,7 @@ public class JankyMenu implements DisposableBean {
 	private final JenkinsApiService jenkinsService;
 	private final JankyOptions options;
 	private final JankyWidgetContext context;
+	private final Map<Job, MenuItem> jobMenu = new HashMap<Job, MenuItem>();
 	private final Menu menu;
 	@Inject
 	private StatusImages statusImages;
@@ -49,16 +52,17 @@ public class JankyMenu implements DisposableBean {
 	}
 
 	public Status refresh() {
-		List<Job> allJobs = Collections.emptyList();
+		Collection<Job> jobs = Collections.emptyList();
 		try {
-			allJobs = jenkinsService.fetch(options.getJenkinsUrl()).getJobs();
+			jobs = jenkinsService.fetch(options.getJenkinsUrl()).getJobs();
 		} catch (JenkinsServiceException e) {
 			log.error("Error fetching Jobs", e);
+			clear();
+			new MenuItemBuilder(menu).withText("Error contacting Jenkins.").build();
+			addOtherItems();
+			return Status.UNKNOWN;
 		}
-		clear();
-		addJobs(allJobs);
-		addOtherItems();
-		return Status.of(allJobs);
+		return handleJobs(jobs);
 	}
 
 	public void display() {
@@ -70,26 +74,47 @@ public class JankyMenu implements DisposableBean {
 		menu.dispose();
 	}
 
+	private Status handleJobs(Collection<Job> jobs) {
+		if(noNewJobs(jobs)) {
+			updateJobStatuses(jobs);
+		} else {
+			redrawMenu(jobs);
+		}
+		return Status.of(jobs);
+	}
+
+	private boolean noNewJobs(Collection<Job> jobs) {
+		return jobMenu.keySet().containsAll(jobs) && jobMenu.size() == jobs.size();
+	}
+
+	private void updateJobStatuses(Collection<Job> jobs) {
+		for (Job job : jobs) {
+			jobMenu.get(job).setImage(statusImages.get(Status.of(job)));
+		}
+	}
+
+	private void redrawMenu(Collection<Job> jobs) {
+		clear();
+		for (Job job : jobs) {
+			MenuItem menuItem = new MenuItemBuilder(menu)
+				.withText(job.getName())
+				.withListener(SWT.Selection,invokingListener(programWrapper, "launch",job.getUrl()))
+				.withImage(statusImages.get(Status.of(job)))
+				.build();
+			jobMenu.put(job, menuItem);
+		}
+		addOtherItems();
+	}
+
 	private void clear() {
+		jobMenu.clear();
 		for (MenuItem item : menu.getItems()) {
 			item.dispose();
 		}
 	}
 
-	private void addJobs(List<Job> jobs) {
-		for (Job job : jobs) {
-			new MenuItemBuilder(menu)
-				.withText(job.getName())
-				.withListener(SWT.Selection, invokingListener(programWrapper, "launch", job.getUrl()))
-				.withImage(statusImages.get(Status.of(job))).build();
-		}
-	}
-
 	private void addOtherItems() {
 		new MenuItemBuilder(menu).withStyle(SWT.SEPARATOR).build();
-		new MenuItemBuilder(menu)
-				.withText("Exit")
-				.withListener(SWT.Selection, invokingListener(context.getShell(), "dispose"))
-				.build();
+		new MenuItemBuilder(menu).withText("Exit").withListener(SWT.Selection, invokingListener(context.getShell(), "dispose")).build();
 	}
 }

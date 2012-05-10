@@ -43,7 +43,7 @@ public class Job implements Serializable {
 	}
 
 	public boolean isEnabled() {
-		return !colorContains("disabled");
+		return !colorContains("disabled") && !colorContains("grey");
 	}
 
 	public boolean isFailing() {
@@ -59,14 +59,41 @@ public class Job implements Serializable {
 	}
 
 	@Override
+	public int hashCode() {
+		return Objects.hashCode(getName(), getUrl());
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Job other = (Job) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (url == null) {
+			if (other.url != null)
+				return false;
+		} else if (!url.equals(other.url))
+			return false;
+		return true;
+	}
+
+	@Override
 	public String toString() {
 		return Objects.toStringHelper(this)
-						.add("name", name)
-						.add("color", color)
-						.add("url", getUrl())
-						.add("isBuilding", isBuilding())
-						.add("isEnabled", isEnabled())
-						.add("isFailing", isFailing())
-					.toString();
+				.add("name", name)
+				.add("color", color)
+				.add("url", getUrl())
+				.add("isBuilding", isBuilding())
+				.add("isEnabled", isEnabled())
+				.add("isFailing", isFailing())
+				.toString();
 	}
 }
