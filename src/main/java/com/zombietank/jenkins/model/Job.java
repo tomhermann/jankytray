@@ -50,6 +50,10 @@ public class Job implements Serializable {
 		return colorContains("red") || colorContains("unstable") || colorContains("broken");
 	}
 	
+	public Status getStatus() {
+		return Status.of(this);
+	}
+	
 	private boolean colorContains(String search) {
 		return containsIgnoreCase(getColor(), search);
 	}

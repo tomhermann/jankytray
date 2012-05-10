@@ -84,12 +84,12 @@ public class JankyMenu implements DisposableBean {
 	}
 
 	private boolean noNewJobs(Collection<Job> jobs) {
-		return jobMenu.keySet().containsAll(jobs) && jobMenu.size() == jobs.size();
+		return jobMenu.size() == jobs.size() && jobMenu.keySet().containsAll(jobs);
 	}
 
 	private void updateJobStatuses(Collection<Job> jobs) {
 		for (Job job : jobs) {
-			jobMenu.get(job).setImage(statusImages.get(Status.of(job)));
+			jobMenu.get(job).setImage(statusImages.get(job.getStatus()));
 		}
 	}
 
@@ -99,7 +99,7 @@ public class JankyMenu implements DisposableBean {
 			MenuItem menuItem = new MenuItemBuilder(menu)
 				.withText(job.getName())
 				.withListener(SWT.Selection,invokingListener(programWrapper, "launch",job.getUrl()))
-				.withImage(statusImages.get(Status.of(job)))
+				.withImage(statusImages.get(job.getStatus()))
 				.build();
 			jobMenu.put(job, menuItem);
 		}
