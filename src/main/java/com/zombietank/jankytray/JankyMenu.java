@@ -2,6 +2,7 @@ package com.zombietank.jankytray;
 
 import static com.zombietank.support.InvokingListener.invokingListener;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -47,8 +48,13 @@ public class JankyMenu implements DisposableBean {
 		this.menu = new Menu(context.getShell());
 	}
 
-	public Status refresh() throws JenkinsServiceException {
-		List<Job> allJobs = jenkinsService.fetch(options.getJenkinsUrl()).getJobs();
+	public Status refresh() {
+		List<Job> allJobs = Collections.emptyList();
+		try {
+			allJobs = jenkinsService.fetch(options.getJenkinsUrl()).getJobs();
+		} catch (JenkinsServiceException e) {
+			log.error("Error fetching Jobs", e);
+		}
 		clear();
 		addJobs(allJobs);
 		addOtherItems();

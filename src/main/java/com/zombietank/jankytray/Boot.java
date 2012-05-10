@@ -22,13 +22,11 @@ public final class Boot {
 		// Set up new application context containing options.
 		DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
 		beanFactory.registerSingleton("jankyOptions", options);
-		GenericApplicationContext parentContext = new GenericApplicationContext(
-				beanFactory);
+		GenericApplicationContext parentContext = new GenericApplicationContext(beanFactory);
 		parentContext.refresh();
 
 		// Augment XML based context
-		AbstractApplicationContext context = new ClassPathXmlApplicationContext(
-				CONFIG_LOCATIONS, parentContext);
+		AbstractApplicationContext context = new ClassPathXmlApplicationContext(CONFIG_LOCATIONS, parentContext);
 		context.registerShutdownHook();
 	}
 }

@@ -17,15 +17,17 @@ public final class JobPredicates {
 			return job.isFailing();
 		}
 	};
-	
+
 	public static Predicate<Job> building = new Predicate<Job>() {
 		public boolean apply(final Job job) {
 			return job.isBuilding();
 		}
 	};
-	
-	public static Predicate<Job> are(final Predicate<Job> predicate) { return predicate; }
-	
+
+	public static Predicate<Job> are(final Predicate<Job> predicate) {
+		return predicate;
+	}
+
 	public static Predicate<Job> disabled = not(enabled);
 
 	private JobPredicates() {
