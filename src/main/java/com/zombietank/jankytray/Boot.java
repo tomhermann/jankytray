@@ -2,9 +2,10 @@ package com.zombietank.jankytray;
 
 import org.kohsuke.args4j.CmdLineParser;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
+
+import com.zombietank.jankytray.configuration.JankyConfiguration;
 
 /***
  * Initializes Spring Context, which ultimately runs JankyTray.
@@ -12,21 +13,24 @@ import org.springframework.context.support.GenericApplicationContext;
  * @author Tom Hermann
  */
 public final class Boot {
-	private static final String[] CONFIG_LOCATIONS = new String[] { "META-INF/spring/root-context.xml" };
-
-	public static void main(String[] args) throws Exception {
-		// Handle command line options
+	
+	public static void main(String... args) throws Exception {
 		JankyOptions options = new JankyOptions();
 		new CmdLineParser(options).parseArgument(args);
+		new Boot().start(options);
+	}
 
-		// Set up new application context containing options.
+	private void start(JankyOptions options) {
 		DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
 		beanFactory.registerSingleton("jankyOptions", options);
 		GenericApplicationContext parentContext = new GenericApplicationContext(beanFactory);
 		parentContext.refresh();
 
-		// Augment XML based context
-		AbstractApplicationContext context = new ClassPathXmlApplicationContext(CONFIG_LOCATIONS, parentContext);
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+		context.setParent(parentContext);
+		context.register(JankyConfiguration.class);
 		context.registerShutdownHook();
+		context.refresh();
+		context.start();		
 	}
 }

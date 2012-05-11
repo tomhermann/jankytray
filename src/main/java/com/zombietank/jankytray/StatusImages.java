@@ -22,7 +22,7 @@ import com.zombietank.jenkins.model.Status;
 public final class StatusImages implements DisposableBean {
 	private static final Logger log = LoggerFactory.getLogger(StatusImages.class);
 	private final ConcurrentHashMap<Status, Image> repository;
-	
+
 	public StatusImages(final Device display, final Map<Status, Resource> images) throws IOException {
 		repository = new ConcurrentHashMap<Status, Image>(images.size());
 		for (Entry<Status, Resource> entry : images.entrySet()) {

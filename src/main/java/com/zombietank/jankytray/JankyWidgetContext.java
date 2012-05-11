@@ -1,10 +1,10 @@
 package com.zombietank.jankytray;
 
+import javax.inject.Inject;
+
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tray;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,7 +13,7 @@ public class JankyWidgetContext {
 	private final Shell shell;
 	private final Tray tray;
 	
-	@Autowired 
+	@Inject 
 	public JankyWidgetContext(Display display, Shell shell, Tray tray) {
 		this.display = display;
 		this.shell = shell;

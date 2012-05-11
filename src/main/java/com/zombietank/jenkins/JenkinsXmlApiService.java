@@ -4,12 +4,15 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.util.EntityUtils;
 import org.simpleframework.xml.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import com.zombietank.jenkins.model.JenkinsApi;
 
@@ -21,12 +24,12 @@ import com.zombietank.jenkins.model.JenkinsApi;
 @Service
 public class JenkinsXmlApiService implements JenkinsApiService {
 	private static final Logger logger = LoggerFactory.getLogger(JenkinsXmlApiService.class);
-	private final RestTemplate restTemplate;
 	private final Serializer serializer;
+	private final HttpClient httpClient;
 	
 	@Autowired
-	public JenkinsXmlApiService(RestTemplate restTemplate, Serializer serializer) {
-		this.restTemplate = restTemplate;
+	public JenkinsXmlApiService(HttpClient httpClient, Serializer serializer) {
+		this.httpClient = httpClient;
 		this.serializer = serializer;
 	}
 
@@ -34,7 +37,8 @@ public class JenkinsXmlApiService implements JenkinsApiService {
 		try {
 			final URI apiUrl = generateApiUri(jenkinsUrl);
 			logger.info("Fetching xml from: {}", apiUrl);
-			return serializer.read(JenkinsApi.class, restTemplate.getForObject(apiUrl, String.class));
+			HttpEntity responseEntity = httpClient.execute(new HttpPost(apiUrl)).getEntity();
+			return serializer.read(JenkinsApi.class, EntityUtils.toString(responseEntity));
 		} catch (Exception e) {
 			throw new JenkinsServiceException("Unable to fetch xml from " + jenkinsUrl, e);
 		}

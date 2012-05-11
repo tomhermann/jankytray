@@ -2,10 +2,11 @@ package com.zombietank.jankytray;
 
 import static com.zombietank.support.InvokingListener.invokingListener;
 
+import javax.inject.Inject;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TrayItem;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.zombietank.jenkins.model.Status;
@@ -19,13 +20,13 @@ import com.zombietank.swt.ProgramWrapper;
  */
 @Component
 public class JankyTray implements InitializingBean, Runnable {
-	@Autowired private StatusImages statusImages;
-	@Autowired private ProgramWrapper programWrapper;
+	@Inject private StatusImages statusImages;
+	@Inject private ProgramWrapper programWrapper;
 	private JankyOptions options;
 	private JankyMenu jankyMenu;
 	private JankyWidgetContext context;
 	
-	@Autowired
+	@Inject
 	public JankyTray(JankyOptions options, JankyMenu jankyMenu, JankyWidgetContext context) {
 		this.options = options;
 		this.jankyMenu = jankyMenu;
@@ -44,18 +45,21 @@ public class JankyTray implements InitializingBean, Runnable {
 		trayIcon.addListener(SWT.DefaultSelection, invokingListener(jankyMenu, "refresh"));
 		trayIcon.addListener(SWT.DefaultSelection, invokingListener(programWrapper, "launch", options.getJenkinsUrl()));
 		
-		new Runnable() {
+		Runnable runnable = new Runnable() {
 			public void run() {
 				Status refreshStatus = jankyMenu.refresh();
 				trayIcon.setImage(statusImages.get(refreshStatus));
 				trayIcon.setToolTipText(refreshStatus.getName());
 				context.getDisplay().timerExec(options.getPollingInterval() * 1000, this);
 			}
-		}.run();
+		};
+		
+		context.getDisplay().asyncExec(runnable);
 		
 		while (!context.getShell().isDisposed()) {
-			if (!context.getDisplay().readAndDispatch())
+			if (!context.getDisplay().readAndDispatch()) {
 				context.getDisplay().sleep();
+			}
 		}
 		
 		context.getDisplay().dispose();	

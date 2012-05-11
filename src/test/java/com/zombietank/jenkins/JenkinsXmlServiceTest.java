@@ -3,44 +3,50 @@ package com.zombietank.jenkins;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.net.URI;
 import java.net.URL;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.StringEntity;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.simpleframework.xml.Serializer;
-import org.springframework.web.client.RestTemplate;
 
 import com.zombietank.jenkins.model.JenkinsApi;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JenkinsXmlServiceTest {
 	private final String baseUrl = "http://example.com/jenkins";
-	private final String apiUrl = baseUrl + "/api/xml";
 	private JenkinsXmlApiService xmlService;
 	@Mock private Serializer xmlDeserializer;
-	@Mock private RestTemplate restTemplate;
+	@Mock private HttpClient httpClient;
 
 	@Before
 	public void setup() {
-		xmlService = new JenkinsXmlApiService(restTemplate, xmlDeserializer);
+		xmlService = new JenkinsXmlApiService(httpClient, xmlDeserializer);
 	}
 	
 	@Test
 	public void fetchApiUrlAndUnmarsal() throws Exception {
 		JenkinsApi api = new JenkinsApi();
 		String xml = "<some><xml/></some>";
-		when(restTemplate.getForObject(new URI(apiUrl), String.class)).thenReturn(xml);
+		HttpResponse httpResponse = mock(HttpResponse.class, RETURNS_DEEP_STUBS);
+		when(httpResponse.getEntity()).thenReturn(new StringEntity(xml));
+		when(httpClient.execute(any(HttpUriRequest.class))).thenReturn(httpResponse );
 		when(xmlDeserializer.read(JenkinsApi.class, xml)).thenReturn(api);
 
-		JenkinsApi actualApi = xmlService.fetch(new URL(baseUrl));
+		JenkinsApi actualApi = xmlService.fetch(new URL("http://example.com"));
 	
 		assertThat(actualApi, is(sameInstance(api)));
 	}
@@ -48,7 +54,7 @@ public class JenkinsXmlServiceTest {
 
 	@Test(expected=JenkinsServiceException.class)
 	public void whenUnableToReadThrowUp() throws Exception {
-		when(restTemplate.getForObject(new URI(apiUrl), String.class)).thenThrow(new RuntimeException("Oh dear!@"));
+		when(httpClient.execute(any(HttpUriRequest.class))).thenThrow(new RuntimeException("Oh dear!@"));
 		xmlService.fetch(new URL(baseUrl));
 	}
 

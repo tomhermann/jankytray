@@ -88,12 +88,14 @@ public class JankyMenu implements DisposableBean {
 	}
 
 	private void updateJobStatuses(Collection<Job> jobs) {
+		log.debug("Updating menu, {} jobs.", jobs.size());
 		for (Job job : jobs) {
 			jobMenu.get(job).setImage(statusImages.get(job.getStatus()));
 		}
 	}
 
 	private void redrawMenu(Collection<Job> jobs) {
+		log.debug("Redrawing menu, {} jobs.", jobs.size());
 		clear();
 		for (Job job : jobs) {
 			MenuItem menuItem = new MenuItemBuilder(menu)
