@@ -24,15 +24,6 @@ public final class JobPredicates {
 		}
 	};
 	
-	public static Predicate<Job> named(final String name) {
-		return new Predicate<Job>() {
-			@Override
-			public boolean apply(Job input) {
-				return input.equals(name);
-			}
-		};
-	}
-
 	public static Predicate<Job> are(final Predicate<Job> predicate) {
 		return predicate;
 	}

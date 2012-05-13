@@ -4,6 +4,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import javax.inject.Inject;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -11,7 +13,6 @@ import org.apache.http.util.EntityUtils;
 import org.simpleframework.xml.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zombietank.jenkins.model.JenkinsApi;
@@ -27,7 +28,7 @@ public class JenkinsXmlApiService implements JenkinsApiService {
 	private final Serializer serializer;
 	private final HttpClient httpClient;
 	
-	@Autowired
+	@Inject
 	public JenkinsXmlApiService(HttpClient httpClient, Serializer serializer) {
 		this.httpClient = httpClient;
 		this.serializer = serializer;

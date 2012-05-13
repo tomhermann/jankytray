@@ -2,9 +2,9 @@ package com.zombietank.jankytray;
 
 import static com.zombietank.support.InvokingListener.invokingListener;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Collection;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -15,7 +15,6 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.zombietank.jenkins.JenkinsApiService;
@@ -36,14 +35,14 @@ public class JankyMenu implements DisposableBean {
 	private final JenkinsApiService jenkinsService;
 	private final JankyOptions options;
 	private final JankyWidgetContext context;
-	private final Map<Job, MenuItem> jobMenu = new HashMap<Job, MenuItem>();
+	private final Map<Job, MenuItem> jobMenu = Collections.synchronizedMap(new HashMap<Job, MenuItem>());
 	private final Menu menu;
 	@Inject
 	private StatusImages statusImages;
 	@Inject
 	private ProgramWrapper programWrapper;
 
-	@Autowired
+	@Inject
 	public JankyMenu(JenkinsApiService jenkinsService, JankyOptions options, JankyWidgetContext context) {
 		this.jenkinsService = jenkinsService;
 		this.options = options;
@@ -102,7 +101,7 @@ public class JankyMenu implements DisposableBean {
 				.withText(job.getName())
 				.withListener(SWT.Selection,invokingListener(programWrapper, "launch",job.getUrl()))
 				.withImage(statusImages.get(job.getStatus()))
-				.build();
+			.build();
 			jobMenu.put(job, menuItem);
 		}
 		addOtherItems();
