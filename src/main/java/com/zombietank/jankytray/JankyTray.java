@@ -5,11 +5,15 @@ import static com.zombietank.support.InvokingListener.invokingListener;
 import javax.inject.Inject;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TrayItem;
+import org.eclipse.swt.widgets.Widget;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
 import com.zombietank.jenkins.model.Status;
+import com.zombietank.swt.EventListener;
+import com.zombietank.swt.OnDisposeRemoveEventListener;
 import com.zombietank.swt.ProgramWrapper;
 
 /***
@@ -39,29 +43,35 @@ public class JankyTray implements InitializingBean, Runnable {
 	}
 	
 	public void run() {
+		final Display display = context.getDisplay();
 		final TrayItem trayIcon = new TrayItem(context.getTray(), SWT.NORMAL);
 		trayIcon.setImage(statusImages.get(Status.UNKNOWN));
-		trayIcon.addListener(SWT.MenuDetect, invokingListener(jankyMenu, "display"));
-		trayIcon.addListener(SWT.DefaultSelection, invokingListener(jankyMenu, "refresh"));
-		trayIcon.addListener(SWT.DefaultSelection, invokingListener(programWrapper, "launch", options.getJenkinsUrl()));
-		
+		addListener(trayIcon, new EventListener(SWT.MenuDetect, invokingListener(jankyMenu, "display")));
+		addListener(trayIcon, new EventListener(SWT.DefaultSelection, invokingListener(jankyMenu, "refresh")));
+		addListener(trayIcon, new EventListener(SWT.DefaultSelection, invokingListener(programWrapper, "launch", options.getJenkinsUrl())));
+
 		Runnable runnable = new Runnable() {
 			public void run() {
 				Status refreshStatus = jankyMenu.refresh();
 				trayIcon.setImage(statusImages.get(refreshStatus));
 				trayIcon.setToolTipText(refreshStatus.getName());
-				context.getDisplay().timerExec(options.getPollingInterval() * 1000, this);
+				display.timerExec(options.getPollingInterval() * 1000, this);
 			}
 		};
 		
-		context.getDisplay().asyncExec(runnable);
+		display.asyncExec(runnable);
 		
 		while (!context.getShell().isDisposed()) {
-			if (!context.getDisplay().readAndDispatch()) {
-				context.getDisplay().sleep();
+			if (!display.readAndDispatch()) {
+				display.sleep();
 			}
 		}
 		
-		context.getDisplay().dispose();	
+		display.dispose();	
+	}
+	
+	private void addListener(Widget widget, EventListener eventListener) {
+		widget.addListener(eventListener.getEventType(), eventListener.getListener());
+		widget.addDisposeListener(new OnDisposeRemoveEventListener(eventListener));
 	}
 }

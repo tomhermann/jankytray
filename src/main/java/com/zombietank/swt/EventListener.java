@@ -2,7 +2,7 @@ package com.zombietank.swt;
 
 import org.eclipse.swt.widgets.Listener;
 
-final class EventListener {
+public class EventListener {
 	private final int eventType;
 	private final Listener listener;
 	

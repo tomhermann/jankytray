@@ -38,9 +38,9 @@ public abstract class ItemBuilder<T extends Item> implements Builder<T> {
 		if (hasListeners()) {
 			for (EventListener eventListener : listeners) {
 				item.addListener(eventListener.getEventType(), eventListener.getListener());
+				item.addDisposeListener(new OnDisposeRemoveEventListener(eventListener));
 			}
 		}
-
 		return item;
 	}
 
