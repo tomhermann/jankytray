@@ -15,12 +15,12 @@ public class OnDisposeRemoveEventListener implements DisposeListener {
 	}
 
 	@Override
-	public void widgetDisposed(DisposeEvent e) {
-		Widget widget = e.widget;
+	public void widgetDisposed(DisposeEvent event) {
+		Widget widget = event.widget;
 		if (!widget.isDisposed()) {
 			widget.removeListener(eventListenerToUnhook.getEventType(), eventListenerToUnhook.getListener());
 			widget.removeDisposeListener(this);
-			logger.info("Removed listeners for {}", widget.toString());
+			logger.debug("Removed listeners for {}", widget.toString());
 		}
 	}
 }
