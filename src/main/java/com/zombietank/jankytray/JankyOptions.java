@@ -16,7 +16,7 @@ public final class JankyOptions {
 	private URL jenkinsUrl;
 
 	@Option(name = "-pollingInterval", usage = "polling interval in seconds")
-	private int pollingInterval = 30;
+	private int pollingInterval = 5;
 
 	public URL getJenkinsUrl() {
 		return jenkinsUrl;

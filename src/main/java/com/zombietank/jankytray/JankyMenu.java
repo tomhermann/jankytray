@@ -37,10 +37,9 @@ public class JankyMenu implements DisposableBean {
 	private final JankyWidgetContext context;
 	private final Map<Job, MenuItem> jobMenu = Collections.synchronizedMap(new HashMap<Job, MenuItem>());
 	private final Menu menu;
-	@Inject
-	private StatusImages statusImages;
-	@Inject
-	private ProgramWrapper programWrapper;
+	@Inject private ConfigurationDialog configurationDialog;
+	@Inject	private StatusImages statusImages;
+	@Inject	private ProgramWrapper programWrapper;
 
 	@Inject
 	public JankyMenu(JenkinsApiService jenkinsService, JankyOptions options, JankyWidgetContext context) {
@@ -116,6 +115,7 @@ public class JankyMenu implements DisposableBean {
 
 	private void addOtherItems() {
 		new MenuItemBuilder(menu).withStyle(SWT.SEPARATOR).build();
+		new MenuItemBuilder(menu).withText("Settings").withListener(SWT.Selection, invokingListener(configurationDialog, "open")).build();
 		new MenuItemBuilder(menu).withText("Exit").withListener(SWT.Selection, invokingListener(context.getShell(), "dispose")).build();
 	}
 }
