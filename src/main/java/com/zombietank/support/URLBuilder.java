@@ -16,15 +16,9 @@ public class URLBuilder implements Builder<URL> {
 	}
 
 	public boolean isValidUrl() {
-		if(url == null || url.length() == 0) {
-			System.err.println("Sucks here");
-			return false;
-		}
 		try {
-			new URL(url);
-			return true;
+			return url != null && url.length() > 0 && new URL(url) != null;
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
 			return false;
 		}
 	}
@@ -37,5 +31,4 @@ public class URLBuilder implements Builder<URL> {
 			throw new IllegalArgumentException("Invalid url: " + url);
 		}
 	} 
-
 }

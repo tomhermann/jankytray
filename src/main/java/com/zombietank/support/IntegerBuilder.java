@@ -14,12 +14,8 @@ public class IntegerBuilder implements Builder<Integer> {
 	}
 	
 	public boolean isValidInteger() {
-		if(input == null) {
-			return false;
-		}
 		try {
-			Integer.valueOf(input);
-			return true;
+			return input != null && Integer.valueOf(input) > 0;
 		} catch(NumberFormatException e) {
 			return false;
 		}
