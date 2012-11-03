@@ -12,7 +12,7 @@ import com.google.common.base.Objects;
  * @author Tom Hermann
  */
 public final class JankyOptions {
-	@Option(name = "-url", required = true, usage = "Root Jenkins url")
+	@Option(name = "-url", usage = "Root Jenkins url")
 	private URL jenkinsUrl;
 
 	@Option(name = "-pollingInterval", usage = "polling interval in seconds")
@@ -22,6 +22,10 @@ public final class JankyOptions {
 		return jenkinsUrl;
 	}
 
+	public boolean hasJenkinsUrl() {
+		return jenkinsUrl != null;
+	}
+	
 	public void setJenkinsUrl(URL jenkinsUrl) {
 		this.jenkinsUrl = jenkinsUrl;
 	}

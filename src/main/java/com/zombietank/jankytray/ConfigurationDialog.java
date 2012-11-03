@@ -55,9 +55,8 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		gridData.horizontalAlignment = GridData.FILL;
 		jenkinsUrlText = new Text(parent, SWT.BORDER);
 		jenkinsUrlText.setLayoutData(gridData);
-		jenkinsUrlText.setText(options.getJenkinsUrl().toExternalForm());
+		jenkinsUrlText.setText(options.hasJenkinsUrl() ? options.getJenkinsUrl().toExternalForm() : "");
 
-		// The text fields will grow with the size of the dialog
 		gridData = new GridData();
 		gridData.grabExcessHorizontalSpace = true;
 		gridData.horizontalAlignment = GridData.FILL;
@@ -68,10 +67,9 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		pollingIntervalText = new Text(parent, SWT.BORDER);
 		pollingIntervalText.setLayoutData(gridData);
 		pollingIntervalText.setText(Integer.toString(options.getPollingInterval()));
-		
-		parent.pack();
 		return parent;
 	}
+	
 	private boolean isValidInput() {
 		boolean valid = true;
 		

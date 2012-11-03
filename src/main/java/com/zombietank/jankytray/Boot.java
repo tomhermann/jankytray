@@ -31,6 +31,6 @@ public final class Boot {
 		context.register(JankyConfiguration.class);
 		context.registerShutdownHook();
 		context.refresh();
-		context.start();		
+		context.start();
 	}
 }
