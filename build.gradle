@@ -61,9 +61,14 @@ if(isWindows()) {
 
 
 def isLinux() {
-	System.getProperty('os.name').toLowerCase().contains('nux') || System.getProperty('os.name').toLowerCase().contains('nix') 
+	osName().contains('nux') || osName().contains('nix') 
 }
 
 def isWindows() {
-	System.getProperty('os.name').toLowerCase().contains('windows')
+	osName().contains('windows')
+}
+
+def osName() {
+	def osName = System.getProperty('os.name').toLowerCase()
+	println "$osName"
 }
