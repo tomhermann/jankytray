@@ -1,5 +1,5 @@
 package com.zombietank.support;
 
-public interface Validator {
+public interface Validatable {
 	boolean isValid();
 }

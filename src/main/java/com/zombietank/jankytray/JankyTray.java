@@ -23,7 +23,7 @@ import com.zombietank.swt.ProgramWrapper;
  * @author Tom Hermann
  */
 @Component
-public class JankyTray implements InitializingBean, Runnable {
+public class JankyTray implements InitializingBean {
 	@Inject private JankyMenu jankyMenu;
 	@Inject private JankyOptions options;
 	@Inject private JankyWidgetContext context;

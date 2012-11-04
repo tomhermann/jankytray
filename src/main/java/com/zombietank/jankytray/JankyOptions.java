@@ -7,7 +7,7 @@ import org.kohsuke.args4j.Option;
 import com.google.common.base.Objects;
 
 /***
- * Command line options for the program.
+ * Options for the program.
  * 
  * @author Tom Hermann
  */

@@ -8,17 +8,17 @@ import org.slf4j.LoggerFactory;
 
 public class OnDisposeRemoveEventListener implements DisposeListener {
 	private static final Logger logger = LoggerFactory.getLogger(OnDisposeRemoveEventListener.class);
-	private final EventListener eventListenerToUnhook;
+	private final EventListener eventListener;
 
 	public OnDisposeRemoveEventListener(EventListener eventListenerToRemove) {
-		this.eventListenerToUnhook = eventListenerToRemove;
+		this.eventListener = eventListenerToRemove;
 	}
 
 	@Override
 	public void widgetDisposed(DisposeEvent event) {
 		Widget widget = event.widget;
 		if (!widget.isDisposed()) {
-			widget.removeListener(eventListenerToUnhook.getEventType(), eventListenerToUnhook.getListener());
+			widget.removeListener(eventListener.getEventType(), eventListener.getListener());
 			widget.removeDisposeListener(this);
 			logger.debug("Removed listeners for {}", widget.toString());
 		}

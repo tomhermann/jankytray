@@ -3,7 +3,7 @@ package com.zombietank.support;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class URLBuilder implements Builder<URL>, Validator {
+public class URLBuilder implements Builder<URL>, Validatable {
 	private final String url;
 	
 	public static URLBuilder forInput(String url) {

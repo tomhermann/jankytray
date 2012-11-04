@@ -1,6 +1,6 @@
 package com.zombietank.support;
 
-public class IntegerBuilder implements Builder<Integer>, Validator {
+public class IntegerBuilder implements Builder<Integer>, Validatable {
 	private final String input;
 
 	public static IntegerBuilder forInput(String input) {

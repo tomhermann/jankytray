@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -37,14 +38,14 @@ public class JankyMenu implements DisposableBean {
 	@Inject private ConfigurationDialog configurationDialog;
 	@Inject	private StatusImages statusImages;
 	@Inject	private ProgramWrapper programWrapper;
-	private final JankyWidgetContext context;
 	private final Menu menu;
+	private final Shell shell;
 	private final Map<Job, MenuItem> jobMenu = Collections.synchronizedMap(new HashMap<Job, MenuItem>());
 	
 	@Inject
-	public JankyMenu(JankyWidgetContext context) {
-		this.context = context;
-		this.menu = new Menu(context.getShell());
+	public JankyMenu(Shell shell) {
+		this.shell = shell;
+		this.menu = new Menu(shell);
 	}
 
 	public Status refresh() {
@@ -114,6 +115,6 @@ public class JankyMenu implements DisposableBean {
 	private void addOtherItems() {
 		new MenuItemBuilder(menu).withStyle(SWT.SEPARATOR).build();
 		new MenuItemBuilder(menu).withText("Settings").withListener(SWT.Selection, invokingListener(configurationDialog, "open")).build();
-		new MenuItemBuilder(menu).withText("Exit").withListener(SWT.Selection, invokingListener(context.getShell(), "dispose")).build();
+		new MenuItemBuilder(menu).withText("Exit").withListener(SWT.Selection, invokingListener(shell, "dispose")).build();
 	}
 }
