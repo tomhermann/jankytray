@@ -11,13 +11,13 @@ import com.google.common.base.Objects;
  * 
  * @author Tom Hermann
  */
-public final class JankyOptions {
+public class JankyOptions {
 	@Option(name = "-url", usage = "Root Jenkins url")
 	private URL jenkinsUrl;
 
 	@Option(name = "-pollingInterval", usage = "polling interval in seconds")
 	private int pollingInterval = 5;
-
+	
 	public URL getJenkinsUrl() {
 		return jenkinsUrl;
 	}
@@ -38,8 +38,12 @@ public final class JankyOptions {
 		this.pollingInterval = pollingInterval;
 	}
 
+	public void persist() {
+	}
+
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this).add("jenkinsUrl", jenkinsUrl).add("pollingInterval", pollingInterval).toString();
 	}
+
 }

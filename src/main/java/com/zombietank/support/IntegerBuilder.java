@@ -1,19 +1,18 @@
 package com.zombietank.support;
 
-public class IntegerBuilder implements Builder<Integer> {
+public class IntegerBuilder implements Builder<Integer>, Validator {
+	private final String input;
 
-	private String input;
+	public static IntegerBuilder forInput(String input) {
+		return new IntegerBuilder(input);
+	}
 
 	public IntegerBuilder(String input) {
 		this.input = input;
 	}
-
-	public IntegerBuilder withNumber(String input) {
-		this.input = input;
-		return this;
-	}
 	
-	public boolean isValidInteger() {
+	@Override
+	public boolean isValid() {
 		try {
 			return input != null && Integer.valueOf(input) > 0;
 		} catch(NumberFormatException e) {

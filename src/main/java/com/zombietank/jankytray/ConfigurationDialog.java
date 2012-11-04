@@ -73,12 +73,12 @@ public class ConfigurationDialog extends TitleAreaDialog {
 	private boolean isValidInput() {
 		boolean valid = true;
 		
-		if (!new IntegerBuilder(pollingIntervalText.getText()).isValidInteger()) {
+		if (!IntegerBuilder.forInput(pollingIntervalText.getText()).isValid()) {
 			setErrorMessage("Please provide a valid polling interval.");
 			valid = false;
 		}
 		
-		if (!new URLBuilder(jenkinsUrlText.getText()).isValidUrl()) {
+		if (!URLBuilder.forInput(jenkinsUrlText.getText()).isValid()) {
 			setErrorMessage("Please provide a valid jenkins url.");
 			valid = false;
 		}
@@ -94,7 +94,8 @@ public class ConfigurationDialog extends TitleAreaDialog {
 	}
 	
 	private void saveInput() {
-		options.setJenkinsUrl(new URLBuilder(jenkinsUrlText.getText()).build());
-		options.setPollingInterval(new IntegerBuilder(pollingIntervalText.getText()).build());
+		options.setJenkinsUrl(URLBuilder.forInput(jenkinsUrlText.getText()).build());
+		options.setPollingInterval(IntegerBuilder.forInput(pollingIntervalText.getText()).build());
+		options.persist();
 	}
 }
