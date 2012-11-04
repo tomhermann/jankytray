@@ -24,20 +24,13 @@ import com.zombietank.swt.ProgramWrapper;
  */
 @Component
 public class JankyTray implements InitializingBean, Runnable {
+	@Inject private JankyMenu jankyMenu;
+	@Inject private JankyOptions options;
+	@Inject private JankyWidgetContext context;
 	@Inject private StatusImages statusImages;
 	@Inject private ProgramWrapper programWrapper;
 	@Inject private ConfigurationDialog configurationDialog;
-	private JankyOptions options;
-	private JankyMenu jankyMenu;
-	private JankyWidgetContext context;
 	
-	@Inject
-	public JankyTray(JankyOptions options, JankyMenu jankyMenu, JankyWidgetContext context) {
-		this.options = options;
-		this.jankyMenu = jankyMenu;
-		this.context = context;
-	}
-
 	public void afterPropertiesSet() throws Exception {
 		if(!options.hasJenkinsUrl()) {
 			configurationDialog.open();

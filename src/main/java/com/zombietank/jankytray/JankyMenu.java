@@ -32,19 +32,17 @@ import com.zombietank.swt.ProgramWrapper;
 @Component
 public class JankyMenu implements DisposableBean {
 	private static final Logger log = LoggerFactory.getLogger(JankyMenu.class);
-	private final JenkinsApiService jenkinsService;
-	private final JankyOptions options;
-	private final JankyWidgetContext context;
-	private final Map<Job, MenuItem> jobMenu = Collections.synchronizedMap(new HashMap<Job, MenuItem>());
-	private final Menu menu;
+	@Inject private JankyOptions options;
+	@Inject private JenkinsApiService jenkinsService;
 	@Inject private ConfigurationDialog configurationDialog;
 	@Inject	private StatusImages statusImages;
 	@Inject	private ProgramWrapper programWrapper;
-
+	private final JankyWidgetContext context;
+	private final Menu menu;
+	private final Map<Job, MenuItem> jobMenu = Collections.synchronizedMap(new HashMap<Job, MenuItem>());
+	
 	@Inject
-	public JankyMenu(JenkinsApiService jenkinsService, JankyOptions options, JankyWidgetContext context) {
-		this.jenkinsService = jenkinsService;
-		this.options = options;
+	public JankyMenu(JankyWidgetContext context) {
 		this.context = context;
 		this.menu = new Menu(context.getShell());
 	}
