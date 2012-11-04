@@ -41,7 +41,7 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		super.create();
 		setTitle("Settings");
 		clearMessages();
-		setMessage("Provide a URL to either your dashboard or a view.", IMessageProvider.INFORMATION);
+		setMessage("Provide a URL for either your dashboard or a view.", IMessageProvider.INFORMATION);
 	}
 
 	@Override
