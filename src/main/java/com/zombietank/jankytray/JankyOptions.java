@@ -45,5 +45,4 @@ public class JankyOptions {
 	public String toString() {
 		return Objects.toStringHelper(this).add("jenkinsUrl", jenkinsUrl).add("pollingInterval", pollingInterval).toString();
 	}
-
 }
