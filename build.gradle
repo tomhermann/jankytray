@@ -71,4 +71,5 @@ def isWindows() {
 def osName() {
 	def osName = System.getProperty('os.name').toLowerCase()
 	println "$osName"
+	return osName
 }
