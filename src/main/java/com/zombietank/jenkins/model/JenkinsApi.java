@@ -24,7 +24,7 @@ public class JenkinsApi implements Serializable {
 	private boolean useSecurity;
 	private boolean useCrumbs;
 	private View primaryView;
-	@ElementList(inline = true, name = "view")
+	@ElementList(inline = true, name = "view", required = false)
 	private List<View> views = Lists.newArrayList();
 	@ElementList(inline = true, name = "job")
 	private List<Job> jobs = Lists.newArrayList();

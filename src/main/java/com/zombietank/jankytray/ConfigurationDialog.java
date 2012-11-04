@@ -2,6 +2,7 @@ package com.zombietank.jankytray;
 
 import javax.inject.Inject;
 
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -31,14 +32,16 @@ public class ConfigurationDialog extends TitleAreaDialog {
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setText("JankyTray Options");
+		newShell.setText("Jenkins System Tray Settings");
 		newShell.setSize(500, 210);
 	}	
 	
 	@Override
 	public void create() {
 		super.create();
-		setTitle("JankyTray Options");
+		setTitle("Settings");
+		clearMessages();
+		setMessage("Provide a URL to either your dashboard or a view.", IMessageProvider.INFORMATION);
 	}
 
 	@Override
@@ -48,7 +51,7 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		parent.setLayout(layout);
 		
 		Label label2 = new Label(parent, SWT.NONE);
-		label2.setText("Jenkins URL");
+		label2.setText("Jenkins URL:");
 
 		GridData gridData = new GridData();
 		gridData.grabExcessHorizontalSpace = true;
@@ -62,7 +65,7 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		gridData.horizontalAlignment = GridData.FILL;
 
 		Label label1 = new Label(parent, SWT.NONE);
-		label1.setText("Polling Interval");
+		label1.setText("Polling Interval:");
 
 		pollingIntervalText = new Text(parent, SWT.BORDER);
 		pollingIntervalText.setLayoutData(gridData);
@@ -97,5 +100,10 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		options.setJenkinsUrl(URLBuilder.forInput(jenkinsUrlText.getText()).build());
 		options.setPollingInterval(IntegerBuilder.forInput(pollingIntervalText.getText()).build());
 		options.persist();
+	}
+	
+	private void clearMessages() {
+		setMessage(null);
+		setErrorMessage(null);
 	}
 }
