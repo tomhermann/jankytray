@@ -42,11 +42,7 @@ public class JankyOptions {
 		preferenceStore.setValue(POLLING_INTERVAL_KEY, pollingInterval);
 	}
 	
-	public void save() {
-		try {
-			preferenceStore.save();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+	public void save() throws IOException {
+		preferenceStore.save();
 	}
 }

@@ -1,5 +1,7 @@
 package com.zombietank.jankytray;
 
+import java.io.IOException;
+
 import javax.inject.Inject;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -12,6 +14,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.zombietank.support.IntegerBuilder;
@@ -19,6 +23,7 @@ import com.zombietank.support.URLBuilder;
 
 @Component
 public class ConfigurationDialog extends TitleAreaDialog {
+	private static final Logger logger = LoggerFactory.getLogger(ConfigurationDialog.class);
 	private Text jenkinsUrlText;
 	private Text pollingIntervalText;
 	private JankyOptions options;
@@ -99,7 +104,11 @@ public class ConfigurationDialog extends TitleAreaDialog {
 	private void saveInput() {
 		options.setJenkinsUrl(URLBuilder.forInput(jenkinsUrlText.getText()).build());
 		options.setPollingInterval(IntegerBuilder.forInput(pollingIntervalText.getText()).build());
-		options.save();
+		try {
+			options.save();
+		} catch (IOException e) {
+			logger.error("Error storing options.", e);
+		}
 	}
 	
 	private void clearMessages() {
