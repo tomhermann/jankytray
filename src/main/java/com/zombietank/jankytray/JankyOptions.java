@@ -1,48 +1,52 @@
 package com.zombietank.jankytray;
 
+import java.io.IOException;
 import java.net.URL;
 
-import org.kohsuke.args4j.Option;
+import javax.inject.Inject;
 
-import com.google.common.base.Objects;
+import org.eclipse.jface.preference.IPersistentPreferenceStore;
+import org.springframework.stereotype.Component;
 
-/***
- * Options for the program.
- * 
- * @author Tom Hermann
- */
+import com.zombietank.support.URLBuilder;
+
+@Component
 public class JankyOptions {
-	@Option(name = "-url", usage = "Root Jenkins url")
-	private URL jenkinsUrl;
+	static final String JENKINS_URL_KEY = "com.zombietank.jankyray.jenkinsUrl";
+	static final String POLLING_INTERVAL_KEY = "com.zombietank.jankyray.pollingInterval";
+	static final int DEFAULT_POLLING_INTERVAL = 5;
+	private final IPersistentPreferenceStore preferenceStore;
 
-	@Option(name = "-pollingInterval", usage = "polling interval in seconds")
-	private int pollingInterval = 5;
+	@Inject
+	public JankyOptions(IPersistentPreferenceStore preferenceStore) {
+		this.preferenceStore = preferenceStore;
+	}
 	
 	public URL getJenkinsUrl() {
-		return jenkinsUrl;
+		return hasJenkinsUrl() ? URLBuilder.forInput(preferenceStore.getString(JENKINS_URL_KEY)).build() : null;
 	}
 
 	public boolean hasJenkinsUrl() {
-		return jenkinsUrl != null;
+		return preferenceStore.contains(POLLING_INTERVAL_KEY);
 	}
 	
 	public void setJenkinsUrl(URL jenkinsUrl) {
-		this.jenkinsUrl = jenkinsUrl;
+		preferenceStore.setValue(JENKINS_URL_KEY, jenkinsUrl.toExternalForm());
 	}
 
 	public int getPollingInterval() {
-		return pollingInterval;
+		return preferenceStore.contains(POLLING_INTERVAL_KEY) ? preferenceStore.getInt(POLLING_INTERVAL_KEY) : DEFAULT_POLLING_INTERVAL;
 	}
 
 	public void setPollingInterval(int pollingInterval) {
-		this.pollingInterval = pollingInterval;
+		preferenceStore.setValue(POLLING_INTERVAL_KEY, pollingInterval);
 	}
-
-	public void persist() {
-	}
-
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).add("jenkinsUrl", jenkinsUrl).add("pollingInterval", pollingInterval).toString();
+	
+	public void save() {
+		try {
+			preferenceStore.save();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

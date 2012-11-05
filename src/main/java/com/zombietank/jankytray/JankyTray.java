@@ -4,6 +4,7 @@ import static com.zombietank.support.InvokingListener.invokingListener;
 
 import javax.inject.Inject;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TrayItem;
@@ -34,6 +35,9 @@ public class JankyTray implements InitializingBean {
 	public void afterPropertiesSet() throws Exception {
 		if(!options.hasJenkinsUrl()) {
 			configurationDialog.open();
+		}
+		if(!options.hasJenkinsUrl()) {
+			MessageDialog.openError(context.getShell(), "Error.", "A valid Jenkins URL is required, please try again.");
 		}
 		run();
 	}

@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.zombietank.httpclient.MimeType;
 import com.zombietank.jenkins.model.JenkinsApi;
 
 /***
@@ -39,7 +40,11 @@ public class JenkinsXmlApiService implements JenkinsApiService {
 			final URI apiUrl = generateApiUri(jenkinsUrl);
 			logger.info("Fetching xml from: {}", apiUrl);
 			HttpEntity responseEntity = httpClient.execute(new HttpPost(apiUrl)).getEntity();
-			return serializer.read(JenkinsApi.class, EntityUtils.toString(responseEntity));
+			String responseContent = EntityUtils.toString(responseEntity);
+			if(MimeType.xml.contentType.equals(EntityUtils.getContentMimeType(responseEntity))) {
+				return serializer.read(JenkinsApi.class, responseContent);
+			}
+			throw new JenkinsServiceException("Invalid content mime type.: " + EntityUtils.getContentMimeType(responseEntity));
 		} catch (Exception e) {
 			throw new JenkinsServiceException("Unable to fetch xml from " + jenkinsUrl, e);
 		}

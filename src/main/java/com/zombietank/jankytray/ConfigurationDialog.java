@@ -99,7 +99,7 @@ public class ConfigurationDialog extends TitleAreaDialog {
 	private void saveInput() {
 		options.setJenkinsUrl(URLBuilder.forInput(jenkinsUrlText.getText()).build());
 		options.setPollingInterval(IntegerBuilder.forInput(pollingIntervalText.getText()).build());
-		options.persist();
+		options.save();
 	}
 	
 	private void clearMessages() {
