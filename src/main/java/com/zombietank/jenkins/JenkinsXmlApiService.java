@@ -6,51 +6,33 @@ import java.net.URL;
 
 import javax.inject.Inject;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.util.EntityUtils;
 import org.simpleframework.xml.Serializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 import com.zombietank.httpclient.MimeType;
 import com.zombietank.jenkins.model.JenkinsApi;
 
-/***
- * Populates Jenkins model given Jenkins instance URL.
- * 
- * @author Tom Hermann
- */
-@Service
-public class JenkinsXmlApiService implements JenkinsApiService {
-	private static final Logger logger = LoggerFactory.getLogger(JenkinsXmlApiService.class);
+public class JenkinsXmlApiService extends JenkinsHttpApiService {
 	private final Serializer serializer;
-	private final HttpClient httpClient;
 	
 	@Inject
 	public JenkinsXmlApiService(HttpClient httpClient, Serializer serializer) {
-		this.httpClient = httpClient;
+		super(httpClient);
 		this.serializer = serializer;
 	}
 
-	public JenkinsApi fetch(final URL jenkinsUrl) throws JenkinsServiceException {
-		try {
-			final URI apiUrl = generateApiUri(jenkinsUrl);
-			logger.info("Fetching xml from: {}", apiUrl);
-			HttpEntity responseEntity = httpClient.execute(new HttpPost(apiUrl)).getEntity();
-			String responseContent = EntityUtils.toString(responseEntity);
-			if(MimeType.xml.contentType.equals(EntityUtils.getContentMimeType(responseEntity))) {
-				return serializer.read(JenkinsApi.class, responseContent);
-			}
-			throw new JenkinsServiceException("Invalid content mime type.: " + EntityUtils.getContentMimeType(responseEntity));
-		} catch (Exception e) {
-			throw new JenkinsServiceException("Unable to fetch xml from " + jenkinsUrl, e);
-		}
+	@Override
+	protected URI generateApiUri(URL jenkinsUrl) throws URISyntaxException {
+		return new URI(jenkinsUrl.toExternalForm() + "/api/xml");
 	}
 
-	private URI generateApiUri(final URL jenkinsUrl) throws URISyntaxException {
-		return new URI(jenkinsUrl.toExternalForm() + "/api/xml");
+	@Override
+	protected JenkinsApi handleReponse(String responseContent) throws Exception {
+		return serializer.read(JenkinsApi.class, responseContent);
+	}
+
+	@Override
+	protected MimeType supportedMimeType() {
+		return MimeType.xml;
 	}
 }

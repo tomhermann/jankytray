@@ -9,17 +9,22 @@ import org.simpleframework.xml.Root;
 
 import com.google.common.base.Objects;
 
-@Root(name="job")
+@Root(name = "job")
 public class Job implements Serializable {
 	private static final long serialVersionUID = 1L;
-	@Element(name="name")
-	private final String name;
-	@Element(name="color")
-	private final String color;
-	@Element(name="url")
-	private final URL url;
-	
-	public Job(@Element(name="url") URL url, @Element(name="name") String name, @Element(name="color") String color) {
+	@Element(name = "name")
+	private String name;
+	@Element(name = "color")
+	private String color;
+	@Element(name = "url")
+	private URL url;
+
+	public Job() {
+	}
+
+	public Job(@Element(name = "url") URL url,
+			   @Element(name = "name") String name,
+			   @Element(name = "color") String color) {
 		checkNotNull(color, "Color may not be null!");
 		this.url = url;
 		this.name = name;
@@ -29,7 +34,7 @@ public class Job implements Serializable {
 	public URL getUrl() {
 		return url;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -38,26 +43,47 @@ public class Job implements Serializable {
 		return color;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+
+	public void setUrl(URL url) {
+		this.url = url;
+	}
+
 	public boolean isBuilding() {
 		return colorContains("anime");
 	}
 
 	public boolean isEnabled() {
-		return !colorContains("disabled") && !colorContains("grey");
+		return !colorContainsAnyOf("disabled", "grey");
 	}
 
 	public boolean isFailing() {
-		return colorContains("red") || colorContains("unstable") || colorContains("broken");
+		return colorContainsAnyOf("red", "unstable", "broken");
 	}
-	
+
 	public Status getStatus() {
 		return Status.of(this);
 	}
-	
+
 	private boolean colorContains(String search) {
 		return containsIgnoreCase(getColor(), search);
 	}
-	
+
+	private boolean colorContainsAnyOf(String ... searches) {
+		for (String search : searches) {
+			if(colorContains(search)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private static final boolean containsIgnoreCase(String source, String search) {
 		return source.toUpperCase().contains(search.toUpperCase());
 	}
@@ -91,13 +117,9 @@ public class Job implements Serializable {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
-				.add("name", name)
-				.add("color", color)
-				.add("url", getUrl())
-				.add("isBuilding", isBuilding())
-				.add("isEnabled", isEnabled())
-				.add("isFailing", isFailing())
-				.toString();
+		return Objects.toStringHelper(this).add("name", name)
+				.add("color", color).add("url", getUrl())
+				.add("isBuilding", isBuilding()).add("isEnabled", isEnabled())
+				.add("isFailing", isFailing()).toString();
 	}
 }
