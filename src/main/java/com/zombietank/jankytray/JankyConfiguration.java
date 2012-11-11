@@ -91,39 +91,33 @@ public class JankyConfiguration {
 		return registry;
 	}
 	
-	@Configuration
-	@Profile(value = JSON_PROFILE) 
+	@Configuration @Profile(value = JSON_PROFILE) 
 	static class Json {
-		@Inject
-		private HttpClient httpClient;
 		
+		@Bean @Inject
+		public JenkinsApiService jenkinsApiService(HttpClient httpClient) {
+			return new JenkinsJsonApiService(httpClient, objectMapper());
+		}
+
 		@Bean
 		public ObjectMapper objectMapper() {
 			ObjectMapper objectMapper = new ObjectMapper();
 			objectMapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
 			return objectMapper;
 		}
-		
-		@Bean
-		public JenkinsApiService jenkinsApiService() {
-			return new JenkinsJsonApiService(httpClient, objectMapper());
-		}
 	}
 	
-	@Configuration
-	@Profile(value = XML_PROFILE) 
+	@Configuration @Profile(value = XML_PROFILE) 
 	static class Xml {
-		@Inject
-		private HttpClient httpClient;
 		
+		@Bean @Inject
+		public JenkinsApiService jenkinsApiService(HttpClient httpClient) {
+			return new JenkinsXmlApiService(httpClient, serializer());
+		}
+
 		@Bean
 		public Serializer serializer() {
 			return new Persister();
-		}
-		
-		@Bean
-		public JenkinsApiService jenkinsApiService() {
-			return new JenkinsXmlApiService(httpClient, serializer());
 		}
 	}
 }
