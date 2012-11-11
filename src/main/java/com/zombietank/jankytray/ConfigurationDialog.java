@@ -42,7 +42,7 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		super.configureShell(newShell);
 		newShell.setText("Jenkins System Tray Settings");
 		newShell.setSize(500, 210);
-		newShell.setImage(imageRegistry.get(JankyConfiguration.SETTINGS_ICON_KEY));
+		newShell.setImage(imageRegistry.get(JankyConfiguration.SETTINGS_ICON));
 	}	
 	
 	@Override
@@ -74,7 +74,7 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		gridData.horizontalAlignment = GridData.FILL;
 
 		Label label1 = new Label(parent, SWT.NONE);
-		label1.setText("Polling Interval:");
+		label1.setText("Polling Interval (seconds):");
 
 		pollingIntervalText = new Text(parent, SWT.BORDER);
 		pollingIntervalText.setLayoutData(gridData);

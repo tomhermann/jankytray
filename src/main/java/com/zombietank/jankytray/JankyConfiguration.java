@@ -32,7 +32,7 @@ import com.zombietank.swt.ImageRegistryWrapper;
 @Configuration
 @ComponentScan(basePackages = "com.zombietank", excludeFilters= {@Filter(Configuration.class)})
 public class JankyConfiguration {
-	public static final String SETTINGS_ICON_KEY = "com.zombietank.settings.icon";
+	public static final String SETTINGS_ICON = "com.zombietank.settings.icon";
 	private static final String PREFERENCES_FILE_NAME = "preferences.ini";
 
 	@Bean
@@ -77,7 +77,7 @@ public class JankyConfiguration {
 	@Bean
 	public ImageRegistryWrapper imageRegistry() throws IOException {
 		ImageRegistryWrapper registry = new ImageRegistryWrapper(display());
-		registry.put(SETTINGS_ICON_KEY, new ClassPathResource("settings.png"));
+		registry.put(SETTINGS_ICON, new ClassPathResource("settings.png"));
 		registry.put(SUCCESS,  new ClassPathResource("success.png"));
 		registry.put(BUILDING, new ClassPathResource("building.png"));
 		registry.put(DISABLED, new ClassPathResource("disabled.png"));

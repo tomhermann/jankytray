@@ -14,7 +14,7 @@ import com.zombietank.support.URLBuilder;
 public class JankyOptions {
 	static final String JENKINS_URL_KEY = "com.zombietank.jankyray.jenkinsUrl";
 	static final String POLLING_INTERVAL_KEY = "com.zombietank.jankyray.pollingInterval";
-	static final int DEFAULT_POLLING_INTERVAL = 5;
+	static final int DEFAULT_POLLING_INTERVAL = 20;
 	private final IPersistentPreferenceStore preferenceStore;
 
 	@Inject
