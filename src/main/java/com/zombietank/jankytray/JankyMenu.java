@@ -115,7 +115,7 @@ public class JankyMenu implements DisposableBean {
 
 	private void addOtherItems() {
 		new MenuItemBuilder(menu).withStyle(SWT.SEPARATOR).build();
-		new MenuItemBuilder(menu).withText("Settings").withListener(SWT.Selection, invokingListener(configurationDialog, "open")).build();
+		new MenuItemBuilder(menu).withText("Settings").withImage(imageRegistry.get(JankyConfiguration.SETTINGS_ICON)).withListener(SWT.Selection, invokingListener(configurationDialog, "open")).build();
 		new MenuItemBuilder(menu).withText("Exit").withListener(SWT.Selection, invokingListener(shell, "dispose")).build();
 	}
 }
