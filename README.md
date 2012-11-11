@@ -5,13 +5,6 @@ A system tray application that displays the current status of a jenkins/hudson i
 
 Building
 --------
-	gradle distZip
-	
-Usage
-------
-	java -jar jankytray-xxx-RELEASE.jar -url http://some/jenkinsServer
-	
-Command line options
---------------------
-    -url baseJenkinsUrl (required)
-    -pollingInterval seconds (default: 30 seconds)
+	1) Set desired platform in gradle.properties
+	2) gradle clean createJar
+	3) Runnable jar and all runtime dependencies will be located under build/output
