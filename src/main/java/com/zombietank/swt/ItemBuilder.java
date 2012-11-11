@@ -44,7 +44,7 @@ public abstract class ItemBuilder<T extends Item> implements Builder<T> {
 		return item;
 	}
 
-	public ItemBuilder<T> withStyle(final int style) {
+	public ItemBuilder<T> withStyle(int style) {
 		this.style = style;
 		return this;
 	}

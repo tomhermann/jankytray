@@ -1,6 +1,7 @@
 package com.zombietank.jankytray;
 
 import static com.zombietank.jenkins.model.Status.BUILDING;
+import static com.zombietank.jenkins.model.Status.DISABLED;
 import static com.zombietank.jenkins.model.Status.FAILURE;
 import static com.zombietank.jenkins.model.Status.SUCCESS;
 import static com.zombietank.jenkins.model.Status.UNKNOWN;
@@ -23,17 +24,15 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 
-import com.google.common.collect.ImmutableMap;
 import com.zombietank.httpclient.GzipAcceptHttpRequestInterceptor;
 import com.zombietank.httpclient.GzipDecompressingHttpResponseInterceptor;
-import com.zombietank.jenkins.model.Status;
+import com.zombietank.swt.ImageRegistryWrapper;
 
 @Configuration
 @ComponentScan(basePackages = "com.zombietank", excludeFilters= {@Filter(Configuration.class)})
 public class JankyConfiguration {
-
+	public static final String SETTINGS_ICON_KEY = "com.zombietank.settings.icon";
 	private static final String PREFERENCES_FILE_NAME = "preferences.ini";
 
 	@Bean
@@ -76,13 +75,14 @@ public class JankyConfiguration {
 	}
 	
 	@Bean
-	public StatusImages statusImages() throws IOException {
-		ImmutableMap<Status, Resource> images = ImmutableMap.<Status,Resource>builder()
-			.put(SUCCESS,  new ClassPathResource("success.png"))
-			.put(BUILDING, new ClassPathResource("building.png"))
-			.put(FAILURE,  new ClassPathResource("failure.png"))
-			.put(UNKNOWN,  new ClassPathResource("unknown.png"))
-		.build();
-		return new StatusImages(display(), images);
+	public ImageRegistryWrapper imageRegistry() throws IOException {
+		ImageRegistryWrapper registry = new ImageRegistryWrapper(display());
+		registry.put(SETTINGS_ICON_KEY, new ClassPathResource("settings.png"));
+		registry.put(SUCCESS,  new ClassPathResource("success.png"));
+		registry.put(BUILDING, new ClassPathResource("building.png"));
+		registry.put(DISABLED, new ClassPathResource("disabled.png"));
+		registry.put(FAILURE,  new ClassPathResource("failure.png"));
+		registry.put(UNKNOWN,  new ClassPathResource("unknown.png"));
+		return registry;
 	}
 }

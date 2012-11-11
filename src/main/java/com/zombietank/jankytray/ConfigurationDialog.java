@@ -20,17 +20,20 @@ import org.springframework.stereotype.Component;
 
 import com.zombietank.support.IntegerBuilder;
 import com.zombietank.support.URLBuilder;
+import com.zombietank.swt.ImageRegistryWrapper;
 
 @Component
 public class ConfigurationDialog extends TitleAreaDialog {
 	private static final Logger logger = LoggerFactory.getLogger(ConfigurationDialog.class);
+	private final JankyOptions options;
+	private final ImageRegistryWrapper imageRegistry;
 	private Text jenkinsUrlText;
 	private Text pollingIntervalText;
-	private JankyOptions options;
 	
 	@Inject
-	public ConfigurationDialog(Shell parentShell, JankyOptions options) {
+	public ConfigurationDialog(Shell parentShell, ImageRegistryWrapper imageRegistry, JankyOptions options) {
 		super(parentShell);
+		this.imageRegistry = imageRegistry;
 		this.options = options;
 	}
 
@@ -39,6 +42,7 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		super.configureShell(newShell);
 		newShell.setText("Jenkins System Tray Settings");
 		newShell.setSize(500, 210);
+		newShell.setImage(imageRegistry.get(JankyConfiguration.SETTINGS_ICON_KEY));
 	}	
 	
 	@Override

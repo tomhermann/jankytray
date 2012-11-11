@@ -22,6 +22,7 @@ import com.zombietank.jenkins.JenkinsApiService;
 import com.zombietank.jenkins.JenkinsServiceException;
 import com.zombietank.jenkins.model.Job;
 import com.zombietank.jenkins.model.Status;
+import com.zombietank.swt.ImageRegistryWrapper;
 import com.zombietank.swt.MenuItemBuilder;
 import com.zombietank.swt.ProgramWrapper;
 
@@ -36,7 +37,7 @@ public class JankyMenu implements DisposableBean {
 	@Inject private JankyOptions options;
 	@Inject private JenkinsApiService jenkinsService;
 	@Inject private ConfigurationDialog configurationDialog;
-	@Inject	private StatusImages statusImages;
+	@Inject	private ImageRegistryWrapper imageRegistry;
 	@Inject	private ProgramWrapper programWrapper;
 	private final Menu menu;
 	private final Shell shell;
@@ -87,7 +88,7 @@ public class JankyMenu implements DisposableBean {
 	private void updateJobStatuses(Collection<Job> jobs) {
 		log.debug("Updating menu, {} jobs.", jobs.size());
 		for (Job job : jobs) {
-			jobMenu.get(job).setImage(statusImages.get(job.getStatus()));
+			jobMenu.get(job).setImage(imageRegistry.get(job.getStatus()));
 		}
 	}
 
@@ -98,7 +99,7 @@ public class JankyMenu implements DisposableBean {
 			MenuItem menuItem = new MenuItemBuilder(menu)
 				.withText(job.getName())
 				.withListener(SWT.Selection,invokingListener(programWrapper, "launch",job.getUrl()))
-				.withImage(statusImages.get(job.getStatus()))
+				.withImage(imageRegistry.get(job.getStatus()))
 			.build();
 			jobMenu.put(job, menuItem);
 		}

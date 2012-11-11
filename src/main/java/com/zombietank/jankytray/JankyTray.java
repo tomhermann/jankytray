@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.zombietank.jenkins.model.Status;
 import com.zombietank.swt.EventListener;
+import com.zombietank.swt.ImageRegistryWrapper;
 import com.zombietank.swt.OnDisposeRemoveEventListener;
 import com.zombietank.swt.ProgramWrapper;
 
@@ -28,7 +29,7 @@ public class JankyTray implements InitializingBean {
 	@Inject private JankyMenu jankyMenu;
 	@Inject private JankyOptions options;
 	@Inject private JankyWidgetContext context;
-	@Inject private StatusImages statusImages;
+	@Inject private ImageRegistryWrapper imageRegistry;
 	@Inject private ProgramWrapper programWrapper;
 	@Inject private ConfigurationDialog configurationDialog;
 	
@@ -45,7 +46,7 @@ public class JankyTray implements InitializingBean {
 	public void run() {
 		final Display display = context.getDisplay();
 		final TrayItem trayIcon = new TrayItem(context.getTray(), SWT.NORMAL);
-		trayIcon.setImage(statusImages.get(Status.UNKNOWN));
+		trayIcon.setImage(imageRegistry.get(Status.UNKNOWN));
 		addListener(trayIcon, new EventListener(SWT.MenuDetect, invokingListener(jankyMenu, "display")));
 		addListener(trayIcon, new EventListener(SWT.DefaultSelection, invokingListener(jankyMenu, "refresh")));
 		addListener(trayIcon, new EventListener(SWT.DefaultSelection, invokingListener(programWrapper, "launch", options.getJenkinsUrl())));
@@ -53,7 +54,7 @@ public class JankyTray implements InitializingBean {
 		Runnable runnable = new Runnable() {
 			public void run() {
 				Status refreshStatus = jankyMenu.refresh();
-				trayIcon.setImage(statusImages.get(refreshStatus));
+				trayIcon.setImage(imageRegistry.get(refreshStatus));
 				trayIcon.setToolTipText(refreshStatus.getName());
 				display.timerExec(options.getPollingInterval() * 1000, this);
 			}
