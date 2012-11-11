@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.inject.Inject;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -111,7 +112,8 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		try {
 			options.save();
 		} catch (IOException e) {
-			logger.error("Error storing options.", e);
+			MessageDialog.openError(getShell(), "Unable to save settings", "Error saving settings, please check the log for more details.  If the problem persists, delete preferences.ini and restart the application.");
+			logger.error("Unable to save settings.", e);
 		}
 	}
 	

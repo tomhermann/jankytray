@@ -52,17 +52,15 @@ task createJar(dependsOn: jar) << {
 		from jar.archivePath
 		into "$buildDir/output"
 	}
-		
 }
 
 jar {
 	manifest {
 		def manifestCp = '. ' + configurations.runtime.files.collect  {
-			File file = it
-			"lib/${file.name}"
+			"lib/${it.name}"
 		}.join(' ')
 		
-		attributes(
+		attributes (
 			'Class-Path': manifestCp,
 			'Main-Class': 'com.zombietank.jankytray.Boot',
 			'Implementation-Title': 'JankyTray', 
@@ -70,6 +68,3 @@ jar {
 		)
 	}
 }
-
-
-
