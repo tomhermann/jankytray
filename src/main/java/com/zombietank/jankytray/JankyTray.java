@@ -37,10 +37,11 @@ public class JankyTray implements InitializingBean {
 		if(!options.hasJenkinsUrl()) {
 			configurationDialog.open();
 		}
-		if(!options.hasJenkinsUrl()) {
+		if(options.hasJenkinsUrl()) {
+			run();
+		} else {
 			MessageDialog.openError(context.getShell(), "Error.", "A valid Jenkins URL is required, please try again.");
 		}
-		run();
 	}
 	
 	public void run() {
