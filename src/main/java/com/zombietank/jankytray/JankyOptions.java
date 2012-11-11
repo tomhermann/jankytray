@@ -20,6 +20,7 @@ public class JankyOptions {
 	@Inject
 	public JankyOptions(IPersistentPreferenceStore preferenceStore) {
 		this.preferenceStore = preferenceStore;
+		preferenceStore.setDefault(POLLING_INTERVAL_KEY, DEFAULT_POLLING_INTERVAL);
 	}
 	
 	public URL getJenkinsUrl() {
@@ -27,7 +28,7 @@ public class JankyOptions {
 	}
 
 	public boolean hasJenkinsUrl() {
-		return preferenceStore.contains(POLLING_INTERVAL_KEY);
+		return preferenceStore.contains(JENKINS_URL_KEY);
 	}
 	
 	public void setJenkinsUrl(URL jenkinsUrl) {
@@ -35,7 +36,7 @@ public class JankyOptions {
 	}
 
 	public int getPollingInterval() {
-		return preferenceStore.contains(POLLING_INTERVAL_KEY) ? preferenceStore.getInt(POLLING_INTERVAL_KEY) : DEFAULT_POLLING_INTERVAL;
+		return preferenceStore.getInt(POLLING_INTERVAL_KEY);
 	}
 
 	public void setPollingInterval(int pollingInterval) {
