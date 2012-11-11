@@ -8,15 +8,18 @@ import org.simpleframework.xml.Root;
 
 import com.google.common.base.Objects;
 
-@Root(name="view")
+@Root(name = "view")
 public class View implements Serializable {
 	private static final long serialVersionUID = 1L;
-	@Element(name="name")
-	private final String name;
-	@Element(name="url")
-	private final URL url;
+	@Element(name = "name")
+	private String name;
+	@Element(name = "url")
+	private URL url;
 
-	public View(@Element(name="name") final String name, @Element(name="url") final URL url) {
+	public View() {
+	}
+
+	public View(@Element(name = "name") final String name, @Element(name = "url") final URL url) {
 		this.name = name;
 		this.url = url;
 	}
@@ -25,12 +28,22 @@ public class View implements Serializable {
 		return name;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public URL getUrl() {
 		return url;
 	}
 
+	public void setUrl(URL url) {
+		this.url = url;
+	}
+
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this).add("name", name).add("url", url).toString();
+		return Objects.toStringHelper(this).add("name", getName())
+				.add("url", getUrl()).toString();
 	}
+
 }

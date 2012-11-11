@@ -7,14 +7,21 @@ import org.simpleframework.xml.Default;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
 @Root(name = "hudson", strict = false) // TODO: will this change?
 @Default(required = false)
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class JenkinsApi implements Serializable {
 	private static final long serialVersionUID = 1L;
+	@JsonIgnore
 	private String assignedLabel;
+	@JsonProperty(value="assignedLabels")
+	private List<String> assignedLabels;
 	private String mode;
 	private String description;
 	private String nodeName;
@@ -28,7 +35,7 @@ public class JenkinsApi implements Serializable {
 	private List<View> views = Lists.newArrayList();
 	@ElementList(inline = true, name = "job")
 	private List<Job> jobs = Lists.newArrayList();
-
+	
 	public String getMode() {
 		return mode;
 	}
@@ -93,13 +100,22 @@ public class JenkinsApi implements Serializable {
 		return description;
 	}
 
-	public void setAssignedLabel(String assignedLabel) {
-		this.assignedLabel = assignedLabel;
-	}
-
 	public String getAssignedLabel() {
 		return assignedLabel;
 	}
+	
+	public void setAssignedLabel(String assignedLabel) {
+		this.assignedLabel = assignedLabel;
+	}
+	
+	public List<String> getAssignedLabels() {
+		return assignedLabels;
+	}
+
+	public void setAssignedLabels(List<String> assignedLabels) {
+		this.assignedLabels = assignedLabels;
+	}
+	
 
 	public void setPrimaryView(View primaryView) {
 		this.primaryView = primaryView;
@@ -124,7 +140,7 @@ public class JenkinsApi implements Serializable {
 	public List<Job> getJobs() {
 		return jobs;
 	}
-
+	
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this).add("assignedLabel", assignedLabel)

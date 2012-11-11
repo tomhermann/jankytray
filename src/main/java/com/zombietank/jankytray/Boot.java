@@ -16,9 +16,20 @@ public final class Boot {
 
 	private void start() {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+		setDefaultProfileWhenNoneProvided(context);
 		context.register(JankyConfiguration.class);
 		context.refresh();
 		context.registerShutdownHook();
 		context.start();
+	}
+
+	private void setDefaultProfileWhenNoneProvided(AnnotationConfigApplicationContext context) {
+		if(noActiveProfile(context)) {
+			context.getEnvironment().setActiveProfiles(JankyConfiguration.JSON_PROFILE);
+		}
+	}
+
+	private boolean noActiveProfile(AnnotationConfigApplicationContext context) {
+		return context.getEnvironment().getActiveProfiles().length == 0;
 	}
 }

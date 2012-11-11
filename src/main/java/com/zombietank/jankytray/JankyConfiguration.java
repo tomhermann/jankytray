@@ -9,6 +9,8 @@ import static com.zombietank.jenkins.model.Status.UNKNOWN;
 import java.io.File;
 import java.io.IOException;
 
+import javax.inject.Inject;
+
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreConnectionPNames;
@@ -23,22 +25,25 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zombietank.httpclient.GzipAcceptHttpRequestInterceptor;
 import com.zombietank.httpclient.GzipDecompressingHttpResponseInterceptor;
+import com.zombietank.jenkins.JenkinsApiService;
+import com.zombietank.jenkins.JenkinsJsonApiService;
+import com.zombietank.jenkins.JenkinsXmlApiService;
 import com.zombietank.swt.ImageRegistryWrapper;
 
 @Configuration
 @ComponentScan(basePackages = "com.zombietank", excludeFilters= {@Filter(Configuration.class)})
 public class JankyConfiguration {
+	public static final String JSON_PROFILE = "json", XML_PROFILE = "xml";
 	public static final String SETTINGS_ICON = "com.zombietank.settings.icon";
-	private static final String PREFERENCES_FILE_NAME = "preferences.ini";
-
-	@Bean
-	public Serializer serializer() {
-		return new Persister();
-	}
+	public static final String PREFERENCES_FILE_NAME = "preferences.ini";
 
 	@Bean
 	public IPersistentPreferenceStore preferenceStore() throws IOException {
@@ -84,5 +89,41 @@ public class JankyConfiguration {
 		registry.put(FAILURE,  new ClassPathResource("failure.png"));
 		registry.put(UNKNOWN,  new ClassPathResource("unknown.png"));
 		return registry;
+	}
+	
+	@Configuration
+	@Profile(value = JSON_PROFILE) 
+	static class Json {
+		@Inject
+		private HttpClient httpClient;
+		
+		@Bean
+		public ObjectMapper objectMapper() {
+			ObjectMapper objectMapper = new ObjectMapper();
+			objectMapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
+			return objectMapper;
+		}
+		
+		@Bean
+		public JenkinsApiService jenkinsApiService() {
+			return new JenkinsJsonApiService(httpClient, objectMapper());
+		}
+	}
+	
+	@Configuration
+	@Profile(value = XML_PROFILE) 
+	static class Xml {
+		@Inject
+		private HttpClient httpClient;
+		
+		@Bean
+		public Serializer serializer() {
+			return new Persister();
+		}
+		
+		@Bean
+		public JenkinsApiService jenkinsApiService() {
+			return new JenkinsXmlApiService(httpClient, serializer());
+		}
 	}
 }
