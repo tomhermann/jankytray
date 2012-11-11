@@ -44,7 +44,7 @@ public abstract class JenkinsHttpApiService implements JenkinsApiService {
 
 	protected abstract MimeType supportedMimeType();
 	
-	private Logger getLogger() {
+	protected Logger getLogger() {
 		return LoggerFactory.getLogger(getClass());
 	}
 }
