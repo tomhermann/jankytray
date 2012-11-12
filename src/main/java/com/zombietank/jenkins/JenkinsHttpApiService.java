@@ -4,7 +4,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.util.EntityUtils;
@@ -23,16 +23,16 @@ public abstract class JenkinsHttpApiService implements JenkinsApiService {
 
 	public JenkinsApi fetch(final URL jenkinsUrl) throws JenkinsServiceException {
 		try {
-			final URI apiUrl = generateApiUri(jenkinsUrl);
+			URI apiUrl = generateApiUri(jenkinsUrl);
 			getLogger().info("Fetching data from: {}", apiUrl);
-			HttpEntity responseEntity = httpClient.execute(new HttpPost(apiUrl)).getEntity();
-			String responseContent = EntityUtils.toString(responseEntity);
-			if(supportedMimeType().contentType.equals(EntityUtils.getContentMimeType(responseEntity))) {
-				JenkinsApi jenkinsApi = handleReponse(responseContent);
+			HttpResponse response = httpClient.execute(new HttpPost(apiUrl));
+			
+			if(supportedMimeType().contentType.equals(EntityUtils.getContentMimeType(response.getEntity()))) {
+				JenkinsApi jenkinsApi = handleReponse(EntityUtils.toString(response.getEntity()));
 				getLogger().debug("API response: {}", jenkinsApi);
 				return jenkinsApi;
 			}
-			throw new JenkinsServiceException("Invalid content mime type.: " + EntityUtils.getContentMimeType(responseEntity));
+			throw new JenkinsServiceException("Invalid content mime type.: " + EntityUtils.getContentMimeType(response.getEntity()));
 		} catch (Exception e) {
 			throw new JenkinsServiceException("Unable to fetch xml from " + jenkinsUrl, e);
 		}

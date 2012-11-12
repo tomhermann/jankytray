@@ -8,6 +8,7 @@ import static com.zombietank.jenkins.model.Status.UNKNOWN;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import javax.inject.Inject;
 
@@ -21,6 +22,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tray;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
@@ -36,19 +39,23 @@ import com.zombietank.httpclient.GzipDecompressingHttpResponseInterceptor;
 import com.zombietank.jenkins.JenkinsApiService;
 import com.zombietank.jenkins.JenkinsJsonApiService;
 import com.zombietank.jenkins.JenkinsXmlApiService;
+import com.zombietank.support.PathUtil;
 import com.zombietank.swt.ImageRegistryWrapper;
 
 @Configuration
 @ComponentScan(basePackages = "com.zombietank", excludeFilters= {@Filter(Configuration.class)})
 public class JankyConfiguration {
+	private static final Logger logger = LoggerFactory.getLogger(JankyConfiguration.class);
 	public static final String JSON_PROFILE = "json", XML_PROFILE = "xml";
 	public static final String SETTINGS_ICON = "com.zombietank.settings.icon";
 	public static final String PREFERENCES_FILE_NAME = "preferences.ini";
 
 	@Bean
-	public IPersistentPreferenceStore preferenceStore() throws IOException {
-		PreferenceStore preferenceStore = new PreferenceStore(PREFERENCES_FILE_NAME);
-		if(new File(PREFERENCES_FILE_NAME).exists()) {
+	public IPersistentPreferenceStore preferenceStore() throws IOException, URISyntaxException {
+		File preferenceFile = new File(PathUtil.getApplicationPath(), PREFERENCES_FILE_NAME);
+		PreferenceStore preferenceStore = new PreferenceStore(preferenceFile.getAbsolutePath());
+		logger.info("Using preference file: {}", preferenceFile.getAbsoluteFile());
+		if(preferenceFile.exists()) {
 			preferenceStore.load();
 		}
 		return preferenceStore;
