@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TrayItem;
 import org.eclipse.swt.widgets.Widget;
 import org.springframework.beans.factory.InitializingBean;
@@ -28,10 +29,10 @@ import com.zombietank.swt.ProgramWrapper;
 public class JankyTray implements InitializingBean {
 	@Inject private JankyMenu jankyMenu;
 	@Inject private JankyOptions options;
-	@Inject private JankyWidgetContext context;
 	@Inject private ImageRegistryWrapper imageRegistry;
 	@Inject private ProgramWrapper programWrapper;
 	@Inject private ConfigurationDialog configurationDialog;
+	@Inject private Shell shell;
 	
 	public void afterPropertiesSet() throws Exception {
 		if(!options.hasJenkinsUrl()) {
@@ -40,13 +41,13 @@ public class JankyTray implements InitializingBean {
 		if(options.hasJenkinsUrl()) {
 			run();
 		} else {
-			MessageDialog.openError(context.getShell(), "Error.", "A valid Jenkins URL is required, please try again.");
+			MessageDialog.openError(shell, "Error.", "A valid Jenkins URL is required, please try again.");
 		}
 	}
 	
 	public void run() {
-		final Display display = context.getDisplay();
-		final TrayItem trayIcon = new TrayItem(context.getTray(), SWT.NORMAL);
+		final Display display = shell.getDisplay();
+		final TrayItem trayIcon = new TrayItem(display.getSystemTray(), SWT.NORMAL);
 		trayIcon.setImage(imageRegistry.get(Status.UNKNOWN));
 		addListener(trayIcon, new EventListener(SWT.MenuDetect, invokingListener(jankyMenu, "display")));
 		addListener(trayIcon, new EventListener(SWT.DefaultSelection, invokingListener(jankyMenu, "refresh")));
@@ -66,7 +67,7 @@ public class JankyTray implements InitializingBean {
 			}
 		});
 		
-		while (!context.getShell().isDisposed()) {
+		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
 			}

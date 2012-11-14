@@ -5,17 +5,16 @@ import java.io.IOException;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
-import org.springframework.beans.factory.DisposableBean;
 import org.springframework.core.io.Resource;
 
 import com.google.common.base.Preconditions;
 
-public class ImageRegistryWrapper implements DisposableBean {
+public class ImageRegistryWrapper {
 	private final ImageRegistry imageRegistry;
 	private final Display display;
 	
 	public ImageRegistryWrapper(Display display) {
-		this.imageRegistry = new ImageRegistry();
+		this.imageRegistry = new ImageRegistry(display);
 		this.display = display;
 	}
 	
@@ -28,10 +27,5 @@ public class ImageRegistryWrapper implements DisposableBean {
 	public Image get(Object key) {
 		Preconditions.checkNotNull(key, "Keys may not be null.");
 		return imageRegistry.get(key.toString());
-	}
-	
-	@Override
-	public void destroy() throws Exception {
-		imageRegistry.dispose();
 	}
 }

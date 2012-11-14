@@ -15,7 +15,6 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.DisposableBean;
 import org.springframework.stereotype.Component;
 
 import com.zombietank.jenkins.JenkinsApiService;
@@ -32,7 +31,7 @@ import com.zombietank.swt.ProgramWrapper;
  * @author Tom Hermann
  */
 @Component
-public class JankyMenu implements DisposableBean {
+public class JankyMenu {
 	private static final Logger log = LoggerFactory.getLogger(JankyMenu.class);
 	@Inject private JankyOptions options;
 	@Inject private JenkinsApiService jenkinsService;
@@ -65,11 +64,6 @@ public class JankyMenu implements DisposableBean {
 
 	public void display() {
 		menu.setVisible(true);
-	}
-
-	public void destroy() throws Exception {
-		log.info("Destroying menu.");
-		menu.dispose();
 	}
 
 	private Status handleJobs(Collection<Job> jobs) {

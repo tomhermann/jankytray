@@ -19,7 +19,6 @@ import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Tray;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 import org.slf4j.Logger;
@@ -75,16 +74,11 @@ public class JankyConfiguration {
 		return new Display();
 	}
 	
-	@Bean(destroyMethod="dispose")
+	@Bean(destroyMethod="") // disable automatic dispose call
 	public Shell shell() {
 		return new Shell(display());
 	}
-	
-	@Bean(destroyMethod="dispose")
-	public Tray tray() {
-		return display().getSystemTray();
-	}
-	
+
 	@Bean
 	public ImageRegistryWrapper imageRegistry() throws IOException {
 		ImageRegistryWrapper registry = new ImageRegistryWrapper(display());
