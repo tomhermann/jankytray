@@ -39,7 +39,6 @@ import com.zombietank.httpclient.GzipDecompressingHttpResponseInterceptor;
 import com.zombietank.jenkins.JenkinsApiService;
 import com.zombietank.jenkins.JenkinsJsonApiService;
 import com.zombietank.jenkins.JenkinsXmlApiService;
-import com.zombietank.support.PathUtil;
 import com.zombietank.swt.ImageRegistryWrapper;
 
 @Configuration
@@ -52,7 +51,7 @@ public class JankyConfiguration {
 
 	@Bean
 	public IPersistentPreferenceStore preferenceStore() throws IOException, URISyntaxException {
-		File preferenceFile = new File(PathUtil.getApplicationPath(), PREFERENCES_FILE_NAME);
+		File preferenceFile = new File(PREFERENCES_FILE_NAME);
 		PreferenceStore preferenceStore = new PreferenceStore(preferenceFile.getAbsolutePath());
 		logger.info("Using preference file: {}", preferenceFile.getAbsoluteFile());
 		if(preferenceFile.exists()) {

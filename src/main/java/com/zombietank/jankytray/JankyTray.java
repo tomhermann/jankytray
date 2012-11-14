@@ -51,17 +51,20 @@ public class JankyTray implements InitializingBean {
 		addListener(trayIcon, new EventListener(SWT.MenuDetect, invokingListener(jankyMenu, "display")));
 		addListener(trayIcon, new EventListener(SWT.DefaultSelection, invokingListener(jankyMenu, "refresh")));
 		addListener(trayIcon, new EventListener(SWT.DefaultSelection, invokingListener(programWrapper, "launch", options.getJenkinsUrl())));
+		if(options.isSelectionMenuDisplayEnabled()) {
+			addListener(trayIcon, new EventListener(SWT.Selection, invokingListener(jankyMenu, "display")));
+		}
 
-		Runnable runnable = new Runnable() {
+		display.asyncExec(new Runnable() {
 			public void run() {
-				Status refreshStatus = jankyMenu.refresh();
-				trayIcon.setImage(imageRegistry.get(refreshStatus));
-				trayIcon.setToolTipText(refreshStatus.getName());
-				display.timerExec(options.getPollingInterval() * 1000, this);
+				if(!trayIcon.isDisposed()) {
+					Status refreshStatus = jankyMenu.refresh();
+					trayIcon.setImage(imageRegistry.get(refreshStatus));
+					trayIcon.setToolTipText(refreshStatus.getName());
+					display.timerExec(options.getPollingInterval() * 1000, this);
+				}
 			}
-		};
-		
-		display.asyncExec(runnable);
+		});
 		
 		while (!context.getShell().isDisposed()) {
 			if (!display.readAndDispatch()) {

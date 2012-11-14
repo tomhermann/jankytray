@@ -12,8 +12,9 @@ import com.zombietank.support.URLBuilder;
 
 @Component
 public class JankyOptions {
-	static final String JENKINS_URL_KEY = "com.zombietank.jankyray.jenkinsUrl";
-	static final String POLLING_INTERVAL_KEY = "com.zombietank.jankyray.pollingInterval";
+	static final String JENKINS_URL_KEY = "com.zombietank.jankytray.jenkinsUrl";
+	static final String POLLING_INTERVAL_KEY = "com.zombietank.jankytray.pollingInterval";
+	static final String SELECTION_MENU_MODE = "com.zombietank.jankytray.selectionMenuMode";
 	static final int DEFAULT_POLLING_INTERVAL = 20;
 	private final IPersistentPreferenceStore preferenceStore;
 
@@ -41,6 +42,10 @@ public class JankyOptions {
 
 	public void setPollingInterval(int pollingInterval) {
 		preferenceStore.setValue(POLLING_INTERVAL_KEY, pollingInterval);
+	}
+
+	public boolean isSelectionMenuDisplayEnabled() {
+		return preferenceStore.getBoolean(SELECTION_MENU_MODE);
 	}
 	
 	public void save() throws IOException {
