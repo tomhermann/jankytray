@@ -69,3 +69,9 @@ jar {
 		)
 	}
 }
+
+task(runApp, dependsOn: 'classes', type: JavaExec) {
+	main = 'com.zombietank.jankytray.Boot'
+	classpath = sourceSets.main.runtimeClasspath
+	jvmArgs ['-XstartOnFirstThread']
+}
