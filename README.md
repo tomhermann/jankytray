@@ -2,7 +2,7 @@
 
 
 A system tray application that displays the current status of a jenkins/hudson instance, and its jobs. 
-This started out as a test to see how  
+
 
 ## Building
  1. Set desired platform in gradle.properties
