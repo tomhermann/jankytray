@@ -9,7 +9,6 @@ import javax.inject.Inject;
 import org.apache.http.client.HttpClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zombietank.httpclient.MimeType;
 import com.zombietank.jenkins.model.JenkinsApi;
 
 public class JenkinsJsonApiService extends JenkinsHttpApiService {
@@ -29,10 +28,5 @@ public class JenkinsJsonApiService extends JenkinsHttpApiService {
 	@Override
 	protected JenkinsApi handleReponse(String responseContent) throws Exception {
 		return objectMapper.readValue(responseContent, JenkinsApi.class);
-	}
-
-	@Override
-	protected MimeType supportedMimeType() {
-		return MimeType.json;
 	}
 }

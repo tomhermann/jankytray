@@ -9,7 +9,6 @@ import javax.inject.Inject;
 import org.apache.http.client.HttpClient;
 import org.simpleframework.xml.Serializer;
 
-import com.zombietank.httpclient.MimeType;
 import com.zombietank.jenkins.model.JenkinsApi;
 
 public class JenkinsXmlApiService extends JenkinsHttpApiService {
@@ -29,10 +28,5 @@ public class JenkinsXmlApiService extends JenkinsHttpApiService {
 	@Override
 	protected JenkinsApi handleReponse(String responseContent) throws Exception {
 		return serializer.read(JenkinsApi.class, responseContent);
-	}
-
-	@Override
-	protected MimeType supportedMimeType() {
-		return MimeType.xml;
 	}
 }
